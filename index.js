@@ -10,6 +10,7 @@ import {
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+const port = process.env.PORT || 5000;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 
@@ -47,4 +48,4 @@ app.post('/api/users', async (req, res) => {
   res.send(result);
 });
 
-app.listen(3000, () => console.log('listening on port 3000..'));
+app.listen(port, () => console.log('listening on port 3000..'));
