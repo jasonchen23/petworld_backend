@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
-  res.send('hello world ;) 哈哈哈哈');
+  res.send('hello world ;)');
 });
 
 app.get('/api/products', async (req, res) => {
