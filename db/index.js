@@ -17,10 +17,22 @@ export const queryUsers = () => {
   });
 };
 
-export const createUsers = (account, password) => {
+export const queryUser = (account) => {
   return new Promise((resolve, reject) => {
     conn.query(
-      `INSERT INTO users (account, password) VALUES ('${account}','${password}')`,
+      `SELECT * FROM users WHERE account="${account}"`,
+      (error, result) => {
+        if (error) reject(error);
+        resolve(result);
+      }
+    );
+  });
+};
+
+export const createUser = (account, password, email, fullName) => {
+  return new Promise((resolve, reject) => {
+    conn.query(
+      `INSERT INTO users (account,password,email,full_name) VALUES ('${account}','${password}','${email}','${fullName}')`,
       (error, result) => {
         if (error) reject(error);
         resolve(result);
