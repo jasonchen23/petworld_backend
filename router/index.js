@@ -12,18 +12,16 @@ const router = express.Router();
 
 router.route('/products').get(async (req, res) => {
   const data = await queryProducts();
-  res.send(data);
+  return res.send(data);
 });
 
 router.route('/products/:productId').get(async (req, res) => {
   try {
     const data = await queryProduct(req.params.productId);
-    if (data.length) {
-      res.send(data);
-      return true;
-    } else throw new Error('no data');
+    if (data.length) return res.send(data);
+    else throw new Error('no data');
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       status: 'error',
       message: 'cannot query product',
     });
@@ -52,19 +50,19 @@ router
       //欄位驗證
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res
-          .status(400)
-          .json({ status: 'error', message: errors.array() });
+        return res.status(400).json({
+          status: 'error',
+          message: errors.array(),
+        });
       }
       try {
         //檢查重複帳號
         const existUser = await queryUser(req.body.account);
         if (existUser.length) {
-          res.status(400).json({
+          return res.status(400).json({
             status: 'error',
             message: 'user already exists',
           });
-          return true;
         }
 
         //建立使用者
@@ -74,12 +72,12 @@ router
           req.body.email,
           req.body.fullName
         );
-        res.json({
+        return res.json({
           status: 'success',
           message: 'create user',
         });
       } catch (err) {
-        res.status(500).json({
+        return res.status(500).json({
           status: 'error',
           message: 'cannot insert user',
         });
