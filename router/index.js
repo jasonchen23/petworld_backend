@@ -66,9 +66,10 @@ router
         }
 
         //建立使用者
+        const hashPassword = await bcrypt.hash(req.body.password, 10);
         await createUser(
           req.body.account,
-          bcrypt.hashSync(req.body.password, 10),
+          hashPassword,
           req.body.email,
           req.body.fullName
         );
@@ -84,5 +85,32 @@ router
       }
     }
   );
+
+router.route('/users/login').post(async (req, res) => {
+  const user = await queryUser(req.body.account);
+  //沒帳號
+  if (!user.length) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'user not exists',
+    });
+  }
+  //密碼錯誤
+  const userPassword = await bcrypt.compare(
+    req.body.password,
+    user[0].password
+  );
+  if (!userPassword) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'password incorrect',
+    });
+  } else {
+    req.session.user = req.body.account; //之後改用redis
+    return res.json({
+      status: 'success',
+    });
+  }
+});
 
 export default router;
