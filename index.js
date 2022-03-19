@@ -36,4 +36,9 @@ app.get('/', (req, res) => {
   res.send('hello world ;)');
 });
 
+app.get('/auth', (req, res) => {
+  if (req.session.user) return res.send('authenticated');
+  return res.send('not authenticated');
+});
+
 app.listen(port, () => console.log('listening on port 5000..'));
