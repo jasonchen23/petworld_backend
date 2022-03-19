@@ -109,8 +109,18 @@ router.route('/users/login').post(async (req, res) => {
     req.session.user = req.body.account; //之後改用redis
     return res.json({
       status: 'success',
+      data: {
+        userName: user[0].full_name,
+      },
     });
   }
+});
+
+router.route('/users/logout').get((req, res) => {
+  req.session.destroy(() => {
+    res.clearCookie('user');
+    return res.send('logout');
+  });
 });
 
 export default router;
