@@ -5,6 +5,9 @@ import router from './router/index.js';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
+import fileStore from 'session-file-store';
+import { realpathSync } from 'fs';
+const FileStore = fileStore(session);
 
 const port = process.env.PORT || 5000;
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -28,6 +31,7 @@ app.use(
     saveUninitialized: false,
     resave: false,
     cookie: { maxAge: 86400000 },
+    store: new FileStore(),
   })
 );
 app.use('/api', router);
