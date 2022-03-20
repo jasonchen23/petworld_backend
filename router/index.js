@@ -6,6 +6,8 @@ import {
   createUser,
   queryProducts,
   queryProduct,
+  addCart,
+  queryCart,
 } from '../db/index.js';
 
 const router = express.Router();
@@ -106,7 +108,7 @@ router.route('/users/login').post(async (req, res) => {
       message: 'password incorrect',
     });
   } else {
-    req.session.user = req.body.account; //之後改用redis
+    req.session.userId = user[0].id;
     return res.json({
       status: 'success',
       data: {
@@ -118,9 +120,48 @@ router.route('/users/login').post(async (req, res) => {
 
 router.route('/users/logout').get((req, res) => {
   req.session.destroy(() => {
-    res.clearCookie('user');
+    res.clearCookie('userId');
     return res.send('logout');
   });
 });
+
+router
+  .route('/cart')
+  .get(async (req, res) => {
+    try {
+      const cart = await queryCart(req.session.userId);
+      return res.json({
+        status: 'success',
+        data: cart,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: 'error',
+        message: 'cannot query cart',
+      });
+    }
+  })
+  .post(async (req, res) => {
+    try {
+      await Promise.all(
+        req.body.cart.map((product) => {
+          return addCart(
+            req.session.userId,
+            product.product_id,
+            product.amount
+          );
+        })
+      );
+      return res.json({
+        status: 'success',
+        message: 'cart inserted',
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: 'error',
+        massage: 'cannot insert cart',
+      });
+    }
+  });
 
 export default router;
