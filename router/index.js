@@ -106,7 +106,7 @@ router.route('/users/login').post(async (req, res) => {
       message: 'password incorrect',
     });
   } else {
-    req.session.user = req.body.account; //之後改用redis
+    req.session.userId = user[0].id;
     return res.json({
       status: 'success',
       data: {
@@ -118,7 +118,7 @@ router.route('/users/login').post(async (req, res) => {
 
 router.route('/users/logout').get((req, res) => {
   req.session.destroy(() => {
-    res.clearCookie('user');
+    res.clearCookie('userId');
     return res.send('logout');
   });
 });

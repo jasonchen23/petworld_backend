@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.set('trust proxy', 1);
 app.use(
   session({
-    name: 'user',
+    name: 'userId',
     secret: 'guava sleep',
     saveUninitialized: false,
     resave: false,
@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/auth', (req, res) => {
-  if (req.session.user) return res.send('authenticated');
+  if (req.session.userId) return res.send('authenticated');
   return res.send('not authenticated');
 });
 
