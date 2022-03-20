@@ -1,12 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import bodyParser from 'body-parser';
 import router from './router/index.js';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
 import fileStore from 'session-file-store';
-import { realpathSync } from 'fs';
 const FileStore = fileStore(session);
 
 const port = process.env.PORT || 5000;
@@ -22,7 +20,7 @@ app.use(
   })
 );
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
 app.set('trust proxy', 1);
 app.use(
   session({
