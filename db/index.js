@@ -58,3 +58,53 @@ export const queryProduct = (id) => {
     });
   });
 };
+
+export const queryCart = (userId) => {
+  return new Promise((resolve, reject) => {
+    conn.query(
+      `SELECT * FROM cart WHERE user_id=${userId} AND order_id IS NULL`,
+      (error, result) => {
+        if (error) reject(error);
+        resolve(result);
+      }
+    );
+  });
+};
+
+const queryProductInCart = (userId, productId) => {
+  return new Promise((resolve, reject) => {
+    conn.query(
+      `SELECT * FROM cart WHERE user_id=${userId} AND product_id=${productId}`,
+      (error, result) => {
+        if (error) reject(error);
+        resolve(result);
+      }
+    );
+  });
+};
+
+export const addCart = (userId, productId, amount) => {
+  return new Promise((resolve, reject) => {
+    queryProductInCart(userId, productId)
+      .then((result) => {
+        if (result.length) {
+          conn.query(
+            `UPDATE cart SET amount=${amount} WHERE  user_id=${userId} AND product_id=${productId}`,
+            (error, result) => {
+              if (error) reject(error);
+              resolve(result);
+            }
+          );
+        } else {
+          conn.query(
+            `INSERT INTO cart (user_id,product_id,amount) VALUES (${userId},${productId},${amount})`,
+            (error, result) => {
+              if (error) reject(error);
+              resolve(result);
+            }
+          );
+        }
+      })
+      .catch((error) => reject(error));
+  });
+};
