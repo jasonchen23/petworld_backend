@@ -14,7 +14,11 @@ const app = express();
 
 app.use(
   cors({
-    origin: ['http://localhost:8080', 'https://localhost:8080'],
+    origin: [
+      'https://fn101-final-project.github.io/final_project_shopping_cart',
+      'http://localhost:8080',
+      'https://localhost:8080',
+    ],
     credentials: true,
     exposedHeaders: ['set-cookie'],
   })
