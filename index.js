@@ -15,12 +15,12 @@ const app = express();
 app.use(
   cors({
     origin: [
-      'https://fn101-final-project.github.io/final_project_shopping_cart',
+      'https://fn101-final-project.github.io',
       'http://localhost:8080',
       'https://localhost:8080',
     ],
     credentials: true,
-    exposedHeaders: ['set-cookie'],
+    exposedHeaders: ['set-cookie', 'X-Forwarded-Proto', 'Cookie'],
   })
 );
 app.use(express.static(__dirname + '/public'));
@@ -32,7 +32,12 @@ app.use(
     secret: 'guava sleep',
     saveUninitialized: false,
     resave: false,
-    cookie: { maxAge: 86400000 },
+    proxy: process.env.NODE_ENV === 'production',
+    cookie: {
+      maxAge: 86400000,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    },
     store: new FileStore(),
   })
 );
@@ -47,4 +52,7 @@ app.get('/auth', (req, res) => {
   return res.send('not authenticated');
 });
 
-app.listen(port, () => console.log('listening on port 5000..'));
+app.listen(port, () => {
+  console.log('listening on port 5000..');
+  console.log(process.env.NODE_ENV === 'production');
+});
