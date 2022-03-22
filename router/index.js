@@ -120,7 +120,10 @@ router.route('/users/login').post(async (req, res) => {
 
 router.route('/users/logout').get((req, res) => {
   req.session.destroy(() => {
-    res.clearCookie('userId');
+    res.clearCookie('userId', {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    });
     return res.send('logout');
   });
 });
