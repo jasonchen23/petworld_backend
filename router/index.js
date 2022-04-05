@@ -68,6 +68,12 @@ router.route('/donate').post(async (req, res) => {
 });
 router
   .route('/users')
+  .get(async (req, res) => {
+    const data = await queryUsers();
+    return res.send(data);
+  });
+
+router.route('/users/create')
   .post(
     [
       body('account').exists().withMessage('帳號必填'),
@@ -170,7 +176,23 @@ router.route('/users/logout').get((req, res) => {
     return res.send('logout');
   });
 });
-
+router.route('/users/adopt').post(async (req, res) => {
+  try {
+    const data = await adopt(req.body.userId);
+    return res.send(data);
+  } catch (err) {
+    return res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+});
+  router
+  .route('/users/viewDonate')
+  .post(async (req, res) => {
+    const data = await viewDonate(req.body.userId);
+    return res.send(data);
+  });
 // router
 //   .route('/cart')
 //   .get(async (req, res) => {

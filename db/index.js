@@ -71,6 +71,24 @@ export const queryAdopt = (userId,animalId) => {
     });
   });
 };
+
+export const adopt = (id) => {
+  return new Promise((resolve, reject) => {
+    conn.query(`SELECT * FROM adopt WHERE user_id= ${id}`, (error, result) => {
+      if (error) reject(error);
+      resolve(result);
+    });
+  });
+};
+
+export const viewDonate = (id) => {
+  return new Promise((resolve, reject) => {
+    conn.query(`SELECT * FROM donate WHERE user_id= ${id}`, (error, result) => {
+      if (error) reject(error);
+      resolve(result);
+    });
+  });
+};
 export const queryDonate = (userId,dog,puppy,cat,kitty,shelter) => {
   return new Promise((resolve, reject) => {
     conn.query(`INSERT INTO donate (user_id,dog,puppy,cat,kitty,shelter)
