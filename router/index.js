@@ -4,32 +4,68 @@ import bcrypt from 'bcrypt';
 import {
   queryUser,
   createUser,
-  queryProducts,
-  queryProduct,
-  addCart,
-  queryCart,
+  queryAnimals,
+  queryAnimal,
+  queryAdopt,
+  queryDonate,
+  // addCart,
+  // queryCart,
 } from '../db/index.js';
 
 const router = express.Router();
 
-router.route('/products').get(async (req, res) => {
-  const data = await queryProducts();
+router.route('/animal').get(async (req, res) => {
+  const data = await queryAnimals();
   return res.send(data);
 });
 
-router.route('/products/:productId').get(async (req, res) => {
+router.route('/animal/:animalId').get(async (req, res) => {
   try {
-    const data = await queryProduct(req.params.productId);
+    const data = await queryAnimal(req.params.animalId);
     if (data.length) return res.send(data);
     else throw new Error('no data');
   } catch (err) {
     return res.status(500).json({
       status: 'error',
-      message: 'cannot query product',
+      message: err.message,
     });
   }
 });
-
+router.route('/animal/:animalId/adopt').post(async (req, res) => {
+  try {
+    const data = await queryAdopt(req.body.userId,req.params.animalId);
+    return res.json({
+      status: 'success',
+      message: 'Adopt success',
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+});
+router.route('/donate').post(async (req, res) => {
+  try {
+    const data = await queryDonate(
+      req.body.userId,
+      req.body.dog,
+      req.body.puppy,
+      req.body.cat,
+      req.body.kitty,
+      req.body.shelter
+    );
+    return res.json({
+      status: 'success',
+      message: 'donate success',
+    });
+  }catch(err) {
+    return res.status(500).json({
+      status:'error',
+      message: 'id not donate'
+    })
+  }
+});
 router
   .route('/users')
   .post(
@@ -46,11 +82,15 @@ router
         .withMessage('Email必填')
         .isEmail()
         .withMessage('Email格式不符'),
-      body('fullName').exists().withMessage('用戶名必填'),
+      body('phone').exists().withMessage('電話必填'),
+      body('address').exists().withMessage('地址必填'),
+      body('job').exists().withMessage('職業必填'),
+      body('age').exists().withMessage('年齡必填'),
     ],
     async (req, res) => {
       //欄位驗證
       const errors = validationResult(req);
+      console.log(errors);
       if (!errors.isEmpty()) {
         return res.status(400).json({
           status: 'error',
@@ -73,7 +113,10 @@ router
           req.body.account,
           hashPassword,
           req.body.email,
-          req.body.fullName
+          req.body.phone,
+          req.body.address,
+          req.body.job,
+          req.body.age
         );
         return res.json({
           status: 'success',
@@ -108,11 +151,11 @@ router.route('/users/login').post(async (req, res) => {
       message: 'password incorrect',
     });
   } else {
-    req.session.userId = user[0].id;
+    req.session.userId = user[0].userId;
     return res.json({
       status: 'success',
       data: {
-        userName: user[0].full_name,
+        userName: user[0].account,
       },
     });
   }
@@ -128,43 +171,43 @@ router.route('/users/logout').get((req, res) => {
   });
 });
 
-router
-  .route('/cart')
-  .get(async (req, res) => {
-    try {
-      const cart = await queryCart(req.session.userId);
-      return res.json({
-        status: 'success',
-        data: cart,
-      });
-    } catch (err) {
-      return res.status(500).json({
-        status: 'error',
-        message: 'cannot query cart',
-      });
-    }
-  })
-  .post(async (req, res) => {
-    try {
-      await Promise.all(
-        req.body.cart.map((product) => {
-          return addCart(
-            req.session.userId,
-            product.product_id,
-            product.amount
-          );
-        })
-      );
-      return res.json({
-        status: 'success',
-        message: 'cart inserted',
-      });
-    } catch (err) {
-      return res.status(500).json({
-        status: 'error',
-        massage: 'cannot insert cart',
-      });
-    }
-  });
+// router
+//   .route('/cart')
+//   .get(async (req, res) => {
+//     try {
+//       const cart = await queryCart(req.session.userId);
+//       return res.json({
+//         status: 'success',
+//         data: cart,
+//       });
+//     } catch (err) {
+//       return res.status(500).json({
+//         status: 'error',
+//         message: 'cannot query cart',
+//       });
+//     }
+//   })
+//   .post(async (req, res) => {
+//     try {
+//       await Promise.all(
+//         req.body.cart.map((product) => {
+//           return addCart(
+//             req.session.userId,
+//             product.product_id,
+//             product.amount
+//           );
+//         })
+//       );
+//       return res.json({
+//         status: 'success',
+//         message: 'cart inserted',
+//       });
+//     } catch (err) {
+//       return res.status(500).json({
+//         status: 'error',
+//         massage: 'cannot insert cart',
+//       });
+//     }
+//   });
 
 export default router;

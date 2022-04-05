@@ -15,9 +15,10 @@ const app = express();
 app.use(
   cors({
     origin: [
-      'https://fn101-final-project.github.io',
+      'https://petworld.github.io',
       'http://localhost:8080',
       'https://localhost:8080',
+      'http://localhost:3030'
     ],
     credentials: true,
     exposedHeaders: ['set-cookie', 'X-Forwarded-Proto', 'Cookie'],
@@ -29,7 +30,7 @@ app.set('trust proxy', 1);
 app.use(
   session({
     name: 'userId',
-    secret: 'guava sleep',
+    secret: 'Jason test',
     saveUninitialized: false,
     resave: false,
     proxy: process.env.NODE_ENV === 'production',
@@ -53,6 +54,6 @@ app.get('/auth', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log('listening on port 5000..');
-  console.log(process.env.NODE_ENV === 'production');
+  console.log('listening on port 3000..');
+  // console.log(process.env.NODE_ENV === 'production');
 });
