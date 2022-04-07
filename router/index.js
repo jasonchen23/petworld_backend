@@ -8,6 +8,8 @@ import {
   queryAnimal,
   queryAdopt,
   queryDonate,
+  viewAdopt,
+  viewDonate,
   // addCart,
   // queryCart,
 } from '../db/index.js';
@@ -176,9 +178,10 @@ router.route('/users/logout').get((req, res) => {
     return res.send('logout');
   });
 });
-router.route('/users/adopt').post(async (req, res) => {
+
+router.route('/users/viewadopt').post(async (req, res) => {
   try {
-    const data = await adopt(req.body.userId);
+    const data = await viewAdopt(req.body.userId);
     return res.send(data);
   } catch (err) {
     return res.status(500).json({
@@ -190,8 +193,15 @@ router.route('/users/adopt').post(async (req, res) => {
   router
   .route('/users/viewDonate')
   .post(async (req, res) => {
-    const data = await viewDonate(req.body.userId);
-    return res.send(data);
+    try {
+      const data = await viewDonate(req.body.userId);
+      return res.send(data);
+    } catch (err) {
+      return res.status(500).json({
+        status: 'error',
+        message: err.message,
+      });
+    }
   });
 // router
 //   .route('/cart')

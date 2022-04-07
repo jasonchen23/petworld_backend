@@ -72,7 +72,7 @@ export const queryAdopt = (userId,animalId) => {
   });
 };
 
-export const adopt = (id) => {
+export const viewAdopt = (id) => {
   return new Promise((resolve, reject) => {
     conn.query(`SELECT * FROM adopt WHERE user_id= ${id}`, (error, result) => {
       if (error) reject(error);
