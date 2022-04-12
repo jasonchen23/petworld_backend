@@ -10,6 +10,7 @@ import {
   queryDonate,
   viewAdopt,
   viewDonate,
+  queryUsers
   // addCart,
   // queryCart,
 } from '../db/index.js';
