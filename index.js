@@ -5,6 +5,11 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
 import fileStore from 'session-file-store';
+import swaggerUi from 'swagger-ui-express';
+import { createRequire } from "module"; // Bring in the ability to create the 'require' method
+const require = createRequire(import.meta.url); // construct the require method
+const swaggerDocument = require("./swagger.json") // use the require method
+// import swaggerDocument from './swagger.json';
 const FileStore = fileStore(session);
 
 const port = process.env.PORT || 5000;
@@ -43,7 +48,9 @@ app.use(
   })
 );
 app.use('/api', router);
+// api 文件
 
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/', (req, res) => {
   res.send('hello world ;)');
 });
