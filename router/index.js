@@ -10,7 +10,8 @@ import {
   queryDonate,
   viewAdopt,
   viewDonate,
-  queryUsers
+  queryUsers,
+  UpdateUser
   // addCart,
   // queryCart,
 } from '../db/index.js';
@@ -139,6 +140,61 @@ router.route('/users/create')
       }
     }
   );
+  router.route('/users/update')
+  .post(
+    [
+      body('userId').exists().withMessage('帳號必填'),
+      body('email')
+        .exists()
+        .withMessage('Email必填')
+        .isEmail()
+        .withMessage('Email格式不符'),
+      body('phone').exists().withMessage('電話必填'),
+      body('address').exists().withMessage('地址必填'),
+      body('job').exists().withMessage('職業必填'),
+      body('age').exists().withMessage('年齡必填'),
+    ],
+    async (req, res) => {
+      //欄位驗證
+      const errors = validationResult(req);
+      console.log(errors);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          status: 'error',
+          message: errors.array(),
+        });
+      }
+      try {
+        //檢查重複帳號
+        const existUser = await queryUser(req.body.userId);
+        if (existUser.length) {
+          return res.status(400).json({
+            status: 'error',
+            message: 'user already exists',
+          });
+        }
+
+        //更新使用者
+        await UpdateUser(
+          req.body.userId,
+          req.body.email,
+          req.body.phone,
+          req.body.address,
+          req.body.job,
+          req.body.age
+        );
+        return res.json({
+          status: 'success',
+          message: 'update user',
+        });
+      } catch (err) {
+        return res.status(500).json({
+          status: 'error',
+          message: 'cannot update user',
+        });
+      }
+    }
+  );
 
 router.route('/users/login').post(async (req, res) => {
   const user = await queryUser(req.body.account);
@@ -160,11 +216,12 @@ router.route('/users/login').post(async (req, res) => {
       message: 'password incorrect',
     });
   } else {
-    req.session.userId = user[0].userId;
+    req.session.user = user[0].user_id;
+    console.log(req.session.user);
     return res.json({
       status: 'success',
       data: {
-        userName: user[0].account,
+        userName: user[0].user_id,
       },
     });
   }

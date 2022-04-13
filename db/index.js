@@ -43,7 +43,17 @@ export const createUser = (account, password, email, phone, address, job, age) =
     );
   });
 };
-
+export const UpdateUser = (userId, email, phone, address, job, age) => {
+  return new Promise((resolve, reject) => {
+    conn.query(
+      `UPDATE user SET email='${email}', phone='${phone}', address='${address}', job='${job}', age='${age}' WHERE userId='${userId};`,
+      (error, result) => {
+        if (error) reject(error);
+        resolve(result);
+      }
+    );
+  });
+};
 export const queryAnimals = () => {
   return new Promise((resolve, reject) => {
     conn.query(`SELECT * FROM animal order by 'animal_id' DESC`, (error, result) => {

@@ -1,182 +1,450 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "title": "User API",
-      "description": "Simple RESTful API in Node.js with TypeScript",
-      "version": "0.0.1"
-    },
-    "servers": [
-      {
-        "url": "http://localhost:3000/api",
-        "description": "Local server"
+  "openapi": "3.0.0",
+  "info": {
+    "title": "PetWorld API",
+    "description": "API 測試頁面",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://petworld.herokuapp.com/",
+      "description": "Heroku"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ANIMAL",
+      "description": "Everything about animal",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "https://data.gov.tw/"
       }
-    ],
-    "paths": {
-      "/users": {
-        "get": {
-          "summary": "Return all users with list.",
-          "description": "Return all existed users.",
-          "responses": {
-            "200": {
-              "description": "A JSON array of user names",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "post": {
-          "summary": "Create a new user.",
-          "description": "Create a new user.",
-          "requestBody": {
-            "required": true,
+    },
+    {
+      "name": "DONATE",
+      "description": "Access to Petstore orders"
+    },
+    {
+      "name": "user",
+      "description": "Operations about user",
+      "externalDocs": {
+        "description": "Find out more about our store",
+        "url": "http://swagger.io"
+      }
+    }
+  ],
+  "paths": {
+    "/auth/testAPI": {
+      "get": {
+        "summary": "API連線測試",
+        "description": "確認連線是否正常",
+        "responses": {
+          "200": {
+            "description": "Message",
             "content": {
               "application/json": {
                 "schema": {
-                  "account":"string"
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": "Success create user.",
-              "content": {
-                "text/plain": {
-                  "schema": {
-                    "type": "string"
-                  }
+                  "type": "string"
                 }
               }
             }
           }
         }
+      }
+    },    
+    "/user/login": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "登入系統",
+        "operationId": "loginUser",
+        "requestBody":{
+          "content":{
+            "application/json":{
+              "schema": {
+                "type": "object",
+                "properties":{
+                  "amount":{
+                    "type":"string"
+                  },
+                  "password":{
+                    "type":"string"
+                  }
+                }
+              }
+            }
+          }
+      },"responses": {
+        "200": {
+          "description": "成功！",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Error username/password",
+          "content": {}
+        }
+      }
+      }
+    },
+    "/user/create": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "用戶註冊",
+        "operationId": "signupUser",
+        "requestBody":{
+          "content":{
+            "application/json":{
+              "schema": {
+                "type": "object",
+                "properties":{
+                  "account":{
+                    "type":"string"
+                  },
+                  "password":{
+                    "type":"string"
+                  },
+                  "email":{
+                    "type":"string"
+                  },
+                  "phone":{
+                    "type":"number"
+                  },
+                  "address":{
+                    "type":"string"
+                  },
+                  "job":{
+                    "type":"string"
+                  },
+                  "age":{
+                    "type":"number"
+                  }
+                }
+              }
+
+            }
+          }
+
+      },"responses": {
+        "200": {
+          "description": "成功註冊！",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Error",
+          "content": {}
+        }
+      }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "ADMIN"
+        ],
+        "summary": "列出所有已註冊用戶",
+        "operationId": "findAllUser",
+        "responses": {
+          "200": {
+            "description": "成功！"
+          },
+          "400": {
+            "description": "連線問題",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/user/{email}": {
+      "get": {
+        "tags": [
+          "ADMIN"
+        ],
+        "summary": "使用{email}找出特定用戶",
+        "operationId": "findSpecificUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "email",
+            "description": "輸入使用者電子郵件",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "properties": {
+                "name": {
+                  "type": "string"
+                  }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功！"
+          },
+          "400": {
+            "description": "連線問題",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/viewadopt": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "列出領養紀錄",
+        "operationId": "useradopt",
+        "requestBody":{
+          "content":{
+            "application/json":{
+              "schema": {
+                "type": "object",
+                "properties":{
+                  "userId":{
+                    "type":"number"
+                  }
+                }
+              }
+            }
+          }
       },
-      "/users/{id}": {
-        "get": {
-          "summary": "Return the specific user.",
-          "description": "Return the specific user.",
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "description": "user id which wants to get",
-              "required": true,
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "A JSON object of user",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/User"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "patch": {
-          "summary": "Update the specific user.",
-          "description": "Update the specific user.",
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "description": "user id which wants to update",
-              "required": true,
-              "type": "string"
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserInput"
-                }
-              }
-            }
+        "responses": {
+          "200": {
+            "description": "成功！"
           },
-          "responses": {
-            "204": {
-              "description": "Success update user.",
-              "content": {
-                "text/plain": {
-                  "schema": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "delete": {
-          "summary": "Delete the specific user.",
-          "description": "Delete the specific user.",
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "description": "user id which wants to delete",
-              "required": true,
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "204": {
-              "description": "Success delete user.",
-              "content": {
-                "text/plain": {
-                  "schema": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
+          "400": {
+            "description": "連線問題",
+            "content": {}
           }
         }
       }
     },
-    "components": {
-      "schemas": {
-        "User": {
-          "properties": {
-            "id": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            },
-            "username": {
-              "type": "string",
-              "example": "Jimmy"
-            },
-            "email": {
-              "type": "string",
-              "example": "test@test.com"
+    "/users/viewdonate": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "列出捐贈紀錄",
+        "operationId": "userdonate",
+        "requestBody":{
+          "content":{
+            "application/json":{
+              "schema": {
+                "type": "object",
+                "properties":{
+                  "userId":{
+                    "type":"number"
+                  }
+                }
+              }
+            }
+          }
+      },
+        "responses": {
+          "200": {
+            "description": "成功！"
+          },
+          "400": {
+            "description": "連線問題",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/logout": {
+      "get": {
+        "tags": [
+          "USER"
+        ],
+        "summary": "登出",
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "登出"
+          },
+          "400": {
+            "description": "發生問題",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/donate": {
+        "post": {
+          "tags": [
+            "DONATE"
+          ],
+          "summary": "捐贈",
+          "operationId": "donate",
+          "requestBody":{
+            "content":{
+              "application/json":{
+                "schema": {
+                  "type": "object",
+                  "properties":{
+                    "userId":{
+                      "type":"number"
+                    },
+                    "dog":{
+                      "type":"number"
+                    },
+                    "putty":{
+                      "type":"number"
+                    },
+                    "cat":{
+                      "type":"number"
+                    },
+                    "kitty":{
+                      "type":"number"
+                    },
+                    "shelter":{
+                      "type":"string"
+                    }
+                  }
+                }
+              }
+            }
+        },"responses": {
+          "200": {
+            "description": "捐贈成功！",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
-          "required": ["id", "username", "email"]
+          "400": {
+            "description": "Error",
+            "content": {}
+          }
+        }
+        }
+    },
+    "/animal": {
+      "get": {
+        "tags": [
+          "ANIMAL"
+        ],
+        "summary": "列出收容所動物",
+        "operationId": "findAnimal",
+        "responses": {
+          "200": {
+            "description": "成功！"
+          },
+          "400": {
+            "description": "連線問題",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/animal/:animalId/adopt": {
+      "post": {
+        "tags": [
+          "ANIMAL"
+        ],
+        "summary": "領養動物",
+        "operationId": "adopt",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "animalId",
+            "description": "輸入animalId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "properties": {
+                "name": {
+                  "type": "string"
+                  }
+              }
+            }
+          }
+        ],
+        "requestBody":{
+          "content":{
+            "application/json":{
+              "schema": {
+                "type": "object",
+                "properties":{
+                  "userId":{
+                    "type":"number"
+                  }
+                }
+              }
+
+            }
+          }
+
+      },"responses": {
+        "200": {
+          "description": "領養成功！",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
         },
-        "UserInput": {
-          "properties": {
-            "username": {
+        "400": {
+          "description": "領養失敗",
+          "content": {}
+        }
+      }
+      }
+    },
+    "/animal/{animalId}": {
+      "get": {
+        "tags": [
+          "ANIMAL"
+        ],
+        "summary": "顯示單一動物資料",
+        "operationId": "findanimal",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "animalId",
+            "description": "輸入animalId",
+            "required": true,
+            "schema": {
               "type": "string",
-              "example": "Jimmy"
-            },
-            "email": {
-              "type": "string",
-              "example": "test@test.com"
+              "properties": {
+                "name": {
+                  "type": "string"
+                  }
+              }
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "動物資料已列出！"
           },
-          "required": ["username", "email"]
+          "400": {
+            "description": "查無資料",
+            "content": {}
+          }
         }
       }
     }
   }
+}

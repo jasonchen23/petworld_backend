@@ -23,7 +23,8 @@ app.use(
       'https://petworld.github.io',
       'http://localhost:8080',
       'https://localhost:8080',
-      'http://localhost:3030'
+      'http://localhost:3030',
+      'http://localhost:3031'
     ],
     credentials: true,
     exposedHeaders: ['set-cookie', 'X-Forwarded-Proto', 'Cookie'],
@@ -34,8 +35,8 @@ app.use(express.json());
 app.set('trust proxy', 1);
 app.use(
   session({
-    name: 'userId',
-    secret: 'Jason test',
+    name: 'user',
+    secret: 'JasonChen',
     saveUninitialized: false,
     resave: false,
     proxy: process.env.NODE_ENV === 'production',
