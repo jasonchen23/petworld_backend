@@ -1,10 +1,14 @@
 import express from 'express';
+
+const app = express();
 import cors from 'cors';
 import router from './router/index.js';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
 import fileStore from 'session-file-store';
+import swaggerUi from"swagger-ui-express";
+let swaggerDocument = require("./swagger.json");
 // import swaggerUi from 'swagger-ui-express';
 // import { createRequire } from "module"; // Bring in the ability to create the 'require' method
 // const require = createRequire(import.meta.url); // construct the require method
@@ -15,7 +19,6 @@ const FileStore = fileStore(session);
 const port = process.env.PORT || 5000;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const app = express();
 
 app.use(
   cors({
@@ -51,6 +54,7 @@ app.use(
 app.use('/api', router);
 // api 文件
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/', (req, res) => {
   res.send('hello world ;)');
