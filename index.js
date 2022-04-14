@@ -36,21 +36,21 @@ app.use(
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 app.set('trust proxy', 1);
-app.use(
-  session({
-    name: 'user',
-    secret: 'JasonChen',
-    saveUninitialized: false,
-    resave: false,
-    proxy: process.env.NODE_ENV === 'production',
-    cookie: {
-      maxAge: 86400000,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    },
-    store: new FileStore(),
-  })
-);
+// app.use(
+//   session({
+//     name: 'user',
+//     secret: 'JasonChen',
+//     saveUninitialized: false,
+//     resave: false,
+//     proxy: process.env.NODE_ENV === 'production',
+//     cookie: {
+//       maxAge: 86400000,
+//       secure: process.env.NODE_ENV === 'production',
+//       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+//     },
+//     store: new FileStore(),
+//   })
+// );
 app.use('/api', router);
 // api 文件
 
